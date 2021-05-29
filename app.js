@@ -10,15 +10,14 @@ const usersRouter = require('./routes/users');
 const app = express();
 
 // VIEW ENGINE SETUP
-app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'ejs');
+// DELETED VIEW ENGINE
 
 app.use(logger('dev'));
 app.use(express.json());
 // ACCEPT IN FORM DATA
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
-app.use(express.static(path.join(__dirname, 'public')));
+// DELETED - STATIC FILE
 
 app.use('/', indexRouter);
 app.use('/users', usersRouter);

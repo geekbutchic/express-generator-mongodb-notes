@@ -1,9 +1,11 @@
-var express = require('express');
-var router = express.Router();
+const express = require('express');
+const router = express.Router();
 
-/* GET users listing. */
+/* GET USERS LISTING */
 router.get('/', function(req, res, next) {
-  res.send('respond with a resource');
+  res.json({
+    test:true,
+  });
 });
-
+// localhost:3000/users
 module.exports = router;

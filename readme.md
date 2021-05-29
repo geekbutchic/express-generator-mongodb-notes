@@ -17,5 +17,30 @@ express express-generator-demo --view=ejs
 `STEP 3.`
 * IN TERMINAL RUN `nodemon`
 
-`STEP 4`
-* 
+`STEP 4.`
+* CHECK IF PORT IS CONNECTED TYPE 
+```JAVASCRIPT
+// localhost:3000
+```
+
+`STEP 5.` 
+* DELETE `VIEWS FOLDER` FOLLOWED BY EJS LINES
+* DELETE `PUBLIC FOLDER`.
+```JAVASCRIPT
+app.set('views', path.join(__dirname, 'views'));
+app.set('view engine', 'ejs');
+//================================================//
+app.use(express.static(path.join(__dirname, 'public')));
+```
+`STEP 6.`
+* NOW UNINSTALL EJS WITH TERMINAL COMMAND
+```javascript
+// npm uninstall ejs
+```
+`STEP 7.`
+* UPDATE `INDEX.JS FILE`
+```JAVASCRIPT
+router.get('/', function(req, res, next) {
+  res.json({ index: "INDEX PATH" });
+});
+```
