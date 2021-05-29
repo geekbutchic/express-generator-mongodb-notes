@@ -44,3 +44,24 @@ router.get('/', function(req, res, next) {
   res.json({ index: "INDEX PATH" });
 });
 ```
+END OF SKELETON - DUPLICATED FOR FUTURE USE
+
+================= `INSTALL MONGOOSE` ===================
+
+`MONGODB IS A DATABASE` 
+
+`MONGOOSE IS A DRIVER FOR MONGODB IN NODE`
+
+`STEP 1.` 
+* INSTALL MONGOOSE IN TERMINAL ENTER
+```JAVASCRIPT
+// npm i mongoose
+```
+`STEP 2.`
+* ADD CALLBACK FUNCTION FOR PORT 
+
+```JAVASCRIPT
+server.listen(port, function () {
+  console.log("SERVER IS LIVE ON PORT: " + port);
+});
+```
