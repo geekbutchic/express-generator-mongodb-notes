@@ -59,9 +59,46 @@ END OF SKELETON - DUPLICATED FOR FUTURE USE
 ```
 `STEP 2.`
 * ADD CALLBACK FUNCTION FOR PORT 
-
+* THIS WILL ADD THE SERVER SCRIPT ON TERMINAL
 ```JAVASCRIPT
 server.listen(port, function () {
   console.log("SERVER IS LIVE ON PORT: " + port);
 });
 ```
+
+`STEP 3.` 
+* UPDATE ERROR MESSAGE ON APP.JS
+```JAVASCRIPT
+app.use(function(err, req, res, next) {
+  // SET LOCALS, ONLY PROVIDING ERROR IN DEVELOPMENT
+  res.locals.message = err.message;
+  res.locals.error = req.app.get('env') === 'development' ? err : {};
+
+  // RENDER THE ERROR PAGE
+  res.status(err.status || 500);
+  res.json({ message: "error", error: err });
+});
+```
+====================== MVC ===========================
+### FOLDER SETUP
+
+`STEP 1.` CREATE `USERS` FOLDER.
+
+`STEP 2.` DRAG `USER.JS` FILE INTO USERS FOLDER.
+
+`STEP 3.` RENAME USER.JS TO `userRouter.js`
+
+`STEP 4.` MAKE SURE THE PATH IS UPDATED IN `APP.JS`
+```JAVASCRIPT
+const usersRouter = require('./routes/users/usersRouter');
+```
+`STEP 5.` CREATE TWO FOLDERS IN THE `USERS FOLDER`.
+
+* MODEL FOLDER 
+* CONTROLLER FOLDER
+
+`MODEL AND CONTROLLER FOLDERS WILL HAVE THEIR OWN ICON. THEY ARE PART OF MVC.`
+
+`STEP 6.` CREATE A FILE IN `MODEL.JS` CALLED `User.js`.  YES THE FIRST LETTER MUST BE CAPITALIZED.
+
+`STEP 7.` IN THE CONTROLLER FOLDER CREATE A FILE CALLED `userController.js`

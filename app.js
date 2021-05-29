@@ -5,7 +5,7 @@ const cookieParser = require('cookie-parser');
 const logger = require('morgan');
 
 const indexRouter = require('./routes/index');
-const usersRouter = require('./routes/users');
+const usersRouter = require('./routes/users/usersRouter');
 
 const app = express();
 
@@ -29,13 +29,13 @@ app.use(function(req, res, next) {
 
 // ERROR HANDLER
 app.use(function(err, req, res, next) {
-  // set locals, only providing error in development
+  // SET LOCALS, ONLY PROVIDING ERROR IN DEVELOPMENT
   res.locals.message = err.message;
   res.locals.error = req.app.get('env') === 'development' ? err : {};
 
   // RENDER THE ERROR PAGE
   res.status(err.status || 500);
-  res.render('error');
+  res.json({ message: "error", error: err });
 });
 
 module.exports = app;
