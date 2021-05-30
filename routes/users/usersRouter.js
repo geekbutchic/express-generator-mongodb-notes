@@ -7,5 +7,6 @@ router.get('/', function(req, res, next) {
     test:true,
   });
 });
-// localhost:3000/users
+
+// LOCALHOST:3000/USERS
 module.exports = router;

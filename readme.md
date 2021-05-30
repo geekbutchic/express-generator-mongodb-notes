@@ -80,7 +80,7 @@ app.use(function(err, req, res, next) {
 });
 ```
 ====================== MVC ===========================
-### FOLDER SETUP
+## FOLDER SETUP
 
 `STEP 1.` CREATE `USERS` FOLDER.
 
@@ -99,6 +99,42 @@ const usersRouter = require('./routes/users/usersRouter');
 
 `MODEL AND CONTROLLER FOLDERS WILL HAVE THEIR OWN ICON. THEY ARE PART OF MVC.`
 
-`STEP 6.` CREATE A FILE IN `MODEL.JS` CALLED `User.js`.  YES THE FIRST LETTER MUST BE CAPITALIZED.
+`STEP 6.` CREATE A FILE IN `MODEL FOLDER` CALLED `User.js`.  YES THE FIRST LETTER MUST BE CAPITALIZED.
 
-`STEP 7.` IN THE CONTROLLER FOLDER CREATE A FILE CALLED `userController.js`
+`STEP 7.` IN THE `CONTROLLER FOLDER` CREATE A FILE CALLED `userController.js`
+
+`STEP 8.` IN `USER.JS FILE` ADD USER SCHEMA AKA - COOKIE CUTTER FOR CREATING A NEW USER.
+
+```JAVASCRIPT
+const mongoose = require("mongoose");
+
+const userSchema = new mongoose.Schema({});
+
+module.exports = mongoose.model("user", userSchema);
+```
+
+`STEP 9.` CREATE FULL SCHEMA FOR NEW USER IN `USER.JS FILE`.
+
+```JAVASCRIPT
+const mongoose = require("mongoose");
+
+const userSchema = new mongoose.Schema({
+  firstName: {
+    type: String,
+  },
+  lastName: {
+    type: String,
+  },
+  email: {
+    type: String,
+  },
+  password: {
+    type: String,
+  },
+  username: {
+    type: String,
+  },
+});
+
+module.exports = mongoose.model("user", userSchema);
+```
