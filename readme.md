@@ -86,7 +86,7 @@ app.use(function(err, req, res, next) {
 
 `STEP 2.` DRAG `USER.JS` FILE INTO USERS FOLDER.
 
-`STEP 3.` RENAME USER.JS TO `userRouter.js`
+`STEP 3.` RENAME USER.JS TO `usersRouter.js`
 
 `STEP 4.` MAKE SURE THE PATH IS UPDATED IN `APP.JS`
 ```JAVASCRIPT
@@ -116,17 +116,19 @@ module.exports = mongoose.model("user", userSchema);
 `STEP 9.` CREATE FULL SCHEMA FOR NEW USER IN `USER.JS FILE`.
 
 ```JAVASCRIPT
+// MODEL
 const mongoose = require("mongoose");
-
+// NEW KEYWORD => CREATES A NEW OBJECT
+// OF MONGODB TYPE {}
 const userSchema = new mongoose.Schema({
-  firstName: {
+  firstName: { // CAMEL CASE 
     type: String,
   },
   lastName: {
     type: String,
   },
   email: {
-    type: String,
+    type: String, // CASE SENSITIVE 
   },
   password: {
     type: String,
@@ -137,4 +139,35 @@ const userSchema = new mongoose.Schema({
 });
 
 module.exports = mongoose.model("user", userSchema);
+//  MODEL WILL BE CALLED "USER" AND USE THIS SCHEMA
 ```
+
+`STEP 10.` DELETE PATH
+```JAVASCRIPT
+const path = require('path');
+```
+
+`STEP 11.` ADD MONGOOSE THE DRIVER FOR MONGODB
+* ADD PATH
+```JAVASCRIPT
+const mongoose = require("mongoose");
+```
+* ADD MONGOOSE DATABASE CODE IN `APP.JS`
+
+```JAVASCRIPT
+mongoose
+  .connect("mongodb://localhost:27017/express-generator-mongodb-notes", {
+    useNewUrlParser: true, // REMOVES ERRORS MESSAGES
+    useUnifiedTopology: true, // REMOVES ERROR MESSAGES
+  })
+  .then(() => { //.THEN IS A PROMISE
+    // PROMISES
+    console.log(`MONGODB CONNECTED`);
+  })
+  .catch(function (e) { // ANY ERROR GOES TO CATCH BLOCK
+    console.log(e);
+  });
+```
+=================== PART 2 OF MONGODB ==================
+### REVIEW 
+* `CONTROLLER` AND `MODEL` FOLDERS SHOULD BE INSIDE `USERS`.
