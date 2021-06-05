@@ -15,6 +15,7 @@ mongoose
     // PROMISES
     console.log(`MONGODB CONNECTED`);
   })
+  // ERROR CATCH BLOCK
   .catch(function (e) {
     console.log(e);
   });

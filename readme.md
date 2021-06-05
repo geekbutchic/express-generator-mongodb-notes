@@ -246,8 +246,111 @@ TEST IN POSTMAN SHOULD SEE
 ```
 IT WILL LOOK LIKE THIS UNTIL WE CREATE A USER
 
-TO NOTE: WHEN YOU CONSOLE.LOG `userController.js` IT IS EXPORTING AN OBJECT.
+TO NOTE: WHEN YOU CONSOLE.LOG `userController.js` IT IS EXPORTING AN `OBJECT`.
 
-* TO NOTE: VIDEO EXPLANATION AT MINUTE 45
+### `L - EXPRESS CONTINUED CRUD, MONGODB, ROBOT3`
+* TO NOTE: VIDEO EXPLANATION AT `MINUTE 45`
+* MORNING RECORDING
+```JAVASCRIPT
+SERVER IS LIVE ON PORT: 3000
+MONGODB CONNECTED
+err: true // ERR SET TO TRUE
+payload:  null
+GET /users/get-all-users 500 59.952 ms - 32
+[nodemon] restarting due to changes...
+[nodemon] starting `node ./bin/www`
+SERVER IS LIVE ON PORT: 3000
+MONGODB CONNECTED
+err: null // ERR IS NULL 
+payload:  []
+GET /users/get-all-users 200 17.925 ms - 31
+```
+==================== CREATE USER WITH CALLBACKS ================
+FUNCTION FOR `userController.js`
+```JAVASCRIPT
+  createUser: function (body, callback) {
+    // MONGOOSE METHOD
+    console.log(body);
+    let savedUser = new User({ 
+      // DOES NOT NEED TO BE IN ORDER
+      firstName: body.firstName,
+      lastName: body.lastName,
+      password: body.password,
+      email: body.email,
+      username: body.username,
+    });
+    console.log(savedUser);
+    savedUser.save(function (err, payload) {
+      // SAVES TO DATABASE
+      // ASSIGNS A UNIQUE ID 
+      if (err) {
+        callback(err, null);
+      } else {
+        callback(null, payload);
+      }
+    });
+  },
+```
+FUNCTION FOR `userRouter.js`
+```JAVASCRIPT
+router.post("/create-user", function (req, res) {
+  // CREATE-USER METHOD 
+  userController.createUser(req.body, function (err, payload) {
+    // REQ.BODY COMES FROM POSTMAN
+    if (err) {
+      res.status(500).json({ message: "Error", error: err });
+    } else {
+      res.json({ message: "success", data: payload });
+    }
+  });
+});
+```
+POST REQUEST IN POSTMAN
+```JAVASCRIPT
+{
+    "fistName": "Sonny",
+    "lastName": "Valenz",
+    "email": "sonnyleevalenz@gmail.com",
+    "password": "Raven736599",
+    "username": "vsonnylee"
+}
+// POST => BODY => RAW => JSON
+{
+    "message": "success",
+    "data": {
+        "_id": "60bbfb05fc12a91943bb6e3b",
+        "lastName": "Valenz",
+        "password": "Raven736599",
+        "email": "sonnyleevalenz@gmail.com",
+        "username": "vsonnylee",
+        "__v": 0
+    }
+}
+// USER CREATED
+// localhost:3000/users/create-user
+```
+WE SHOULD ALL CHECK IN ROBOT3 
+* CLICK FILE NAME
+* CLICK COLLECTIONS
+* DOUBLE CLICK USERS 
+* USER CREATED SHOULD APPEAR
 
-
+```JAVASCRIPT
+// CONSOLE.LOG(BODY) 
+{
+  fistName: 'Sonny',
+  lastName: 'Valenz',
+  email: 'sonnyleevalenz@gmail.com',
+  password: 'Raven736599',
+  username: 'vsonnylee'
+}
+// SAVED USER IS ASSIGNED A UNIQUE ID 
+// CONSOLE.LOG(SAVEDUSER)
+{
+  _id: 60bc028b32c9061c35db036e,
+  lastName: 'Valenz',
+  password: 'Raven736599',
+  email: 'sonnyleevalenz@gmail.com',
+  username: 'vsonnylee'
+}
+```
