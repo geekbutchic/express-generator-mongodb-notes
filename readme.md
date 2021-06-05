@@ -169,5 +169,85 @@ mongoose
   });
 ```
 =================== PART 2 OF MONGODB ==================
-### REVIEW 
-* `CONTROLLER` AND `MODEL` FOLDERS SHOULD BE INSIDE `USERS`.
+### LESSON INDEX
+* CALLBACK FUNCTIONS 
+* REQUIRE IN USER SCHEMA
+* GET ALL USERS FUNCTION
+
+```JAVASCRIPT
+const User = require("../model/User");
+//USER IS COMING FROM MONGODB SCHEMA
+```
+REQUIRE IN `USER SCHEMA` FROM THE `MODEL/USER.JS FOLDER`.
+
+CREATING A GET REQUEST WITH A CALLBACK FUNCTION.
+
+`STEP 1.` MAKE SURE USER SCHEMA IS REQUIRED IN.
+
+`STEP 2.` WRITE GET-ALL-USERS FUNCTION IN `userController.js`
+```JAVASCRIPT
+module.exports = {
+  getAllUsers: function (callback) {
+    // USER.FIND({}) IS A MONGOOSE FUNCTION TO QUERY THE DATABASE
+    // 2 PARAMS => ERROR FIRST 
+    // PAYLOAD 2ND -> USER DATA
+    User.find({}, function (err, payload) {
+      if (err) {
+        callback(err, null);
+      } else {
+        callback(null, payload);
+      }
+    });
+  },
+};
+```
+`STEP 3.` REQUIRE IN `USER-CONTROLLER` INTO `ROUTER-CONTROLLER`
+```JAVASCRIPT
+const userController = require("./controller/userController");
+//LOCATED BELOW ROUTER()
+```
+
+```JAVASCRIPT
+// GOOD WAY TO TEST IF userRouter.js IS FUNCTIONING 
+// SHOULD RETURN "test": true
+router.get("/", function (req, res, next) {
+  res.json({
+    test: true,
+  });
+});
+```
+`STEP 4` CREATE A CALLBACK FUNCTION IN USERS-ROUTER
+```JAVASCRIPT
+router.get("/get-all-users", function (req, res) {
+  userController.getAllUsers(function (err, payload) {
+    //ERR ALWAYS COMES FIRST
+    if (err) {
+      res.status(500).json({ message: "ERROR", error: err });
+    } else {
+      res.json({ message: "SUCCESS", data: payload });
+    }
+  });
+});
+// PREFIXED USERS ROUTER IN APP.JS /USERS
+```
+DATA FLOW => 
+* GET REQUEST LOCATED IN `userController.js`
+* USER SCHEMA IS LOCATED IN `User.js`
+* REQUIRE IN `userController.js` INTO `usersRouter.js`
+
+`STEP 5`
+TEST IN POSTMAN SHOULD SEE 
+```javascript
+{
+    "message": "SUCCESS",
+    "data": []
+}
+//localhost:3000/users/get-all-users
+```
+IT WILL LOOK LIKE THIS UNTIL WE CREATE A USER
+
+TO NOTE: WHEN YOU CONSOLE.LOG `userController.js` IT IS EXPORTING AN OBJECT.
+
+* TO NOTE: VIDEO EXPLANATION AT MINUTE 45
+
+
