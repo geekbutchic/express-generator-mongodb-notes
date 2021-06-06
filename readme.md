@@ -173,6 +173,7 @@ mongoose
 * CALLBACK FUNCTIONS 
 * REQUIRE IN USER SCHEMA
 * GET ALL USERS FUNCTION
+* CREATE USER FUNCTION
 
 ```JAVASCRIPT
 const User = require("../model/User");
@@ -353,4 +354,165 @@ WE SHOULD ALL CHECK IN ROBOT3
   email: 'sonnyleevalenz@gmail.com',
   username: 'vsonnylee'
 }
+```
+============= CONTINUED CALLBACK WITH MORE REQUESTS ==============
+
+NEXT LESSON INDEX
+* MVC - `MODEL/DATABASE SCHEMA` || `VIEW/REACT` || `CONTROLLER/HANDLES LOGIC`
+* CALLBACK FUNCTION UPDATE-USER-BY-ID
+* CALLBACK FUNCTION DELETE-USER-BY-ID
+* UNDERSTAND HOW THE DATA FLOWS 
+* `MODEL` => `CONTROLLER` => `USERS-ROUTER`
+
+UPDATE USER BY ID CALLBACK FUNCTION
+```JAVASCRIPT
+// USER-CONTROLLER FILE
+  updateUserByID: function (id, body, callback) {
+    User.findByIdAndUpdate(
+      { _id: id }, // MONGODB SPECIFIC {_id: id}
+      body, // FROM POSTMAN
+      { new: true }, // NEEDED OR ELSE GIVES BACK OBJECT BEFORE UPDATE!
+      function (err, updatedPayload) {
+        if (err) {
+          callback(err, null);
+        } else {
+          callback(null, updatedPayload);
+        }
+      }
+    );
+  },
+```
+FUNCTION IN USER-ROUTER
+```JAVASCRIPT
+router.put("/update-user-by-id/:id", function (req, res) {
+  userController.updateUserByID(
+    req.params.id, // WHATS NEEDED IN REQUEST 
+    req.body, // POSTMAN BODY 
+    function (err, updatedPayload) {
+      if (err) {
+        res.status(500).json({ message: "Error", error: err });
+      } else {
+        res.json({ message: "success", data: updatedPayload });
+      }
+    }
+  );
+});
+```
+FINAL RESULT IN POSTMAN - UPDATED USER
+```JAVASCRIPT
+// POST REQUEST
+//localhost:3000/users/update-user-by-id/60bc028b32c9061c35db036e
+{
+    "email": "vsonnylee@gmail.com"
+}
+// UPDATING USERS EMAIL 
+{
+    "message": "success",
+    "data": {
+        "_id": "60bc028b32c9061c35db036e",
+        "lastName": "Valenz",
+        "password": "Raven736599",
+        "email": "vsonnylee@gmail.com",
+        "username": "vsonnylee",
+        "__v": 0
+    }
+}
+// PREVIOUSLY IT WAS sonnyleevalenz@gmail.com
+```
+CALLBACK FUNCTION DELETE-USER-BY-ID
+```JAVASCRIPT
+// USER-CONTROLLER 
+  deleteUserByID: function (id, callback) {
+    User.findByIdAndRemove({ _id: id }, function (err, deletedPayload) {
+      if (err) {
+        callback(err, null);
+      } else {
+        callback(null, deletedPayload);
+      }
+    });
+  },
+```
+USER-ROUTER FUNCTION
+```JAVASCRIPT
+// USER-ROUTER
+router.delete("/delete-user-by-id/:id", function (req, res) {
+  userController.deleteUserByID(req.params.id, function (err, deletedPayload) {
+    console.log(req)
+    if (err) { // NULL = NOT THERE RUN LINE DELETE-PAY-LOAD
+      res.status(500).json({ message: "Error", error: err });
+    } else {
+      res.json({ message: "success", data: deletedPayload });
+    }
+  });
+});
+```
+POSTMAN => FINAL RESULT
+```JAVASCRIPT
+//localhost:3000/users/delete-user-by-id/60bc028b32c9061c35db036e
+
+{
+    "message": "success",
+    "data": {
+        "_id": "60bc028b32c9061c35db036e",
+        "lastName": "Valenz",
+        "password": "Raven736599",
+        "email": "vsonnylee@gmail.com",
+        "username": "vsonnylee",
+        "__v": 0
+    }
+}
+```
+GET REQUEST AND ROBOT3 SHOULD SHOW ERASED USER
+```JAVASCRIPT
+// GET REQUEST AFTER DELETING USER
+{
+    "message": "SUCCESS",
+    "data": []
+}
+```
+=================== PROMISE VERSION =========================
+
+VIDEO: L- Express CRUD, Promise, Bcryptjs
+* LOGIC IS HAPPENING IN THE CONTROLLER.
+* ROUTES = `GET, POST, DELETE, UPDATE`
+* CRUD - `CREATE, RETRIEVE, UPDATE, DELETE`
+* `POST = CREATE` * `GET = RETRIEVE` * `PUT = UPDATE` * `DELETE = DELETE`
+* `bcryptjs`
+
+START WITH REQUIRING IN `bcryptjs` IN TERMINAL ADD `npm i bcryptjs`
+* NEXT REQUIRE IN `bcryptjs` LOCATED ON TOP OF PAGE 
+```JAVASCRIPT
+const bcrypt = require("bcryptjs");
+```
+BEFORE MOVING INTO PROMISES THE LAST FUNCTION WILL EXPLAIN CALLBACK HELL AND REQUIRE IN BCRYPTJS.
+```JAVASCRIPT
+  createUser: function (body, callback) {
+    bcrypt.genSalt(10, function (err, salt) {
+      if (err) {
+        callback(err, null);
+      } else {
+        bcrypt.hash(body.password, salt, function (err, hash) {
+          if (err) {
+            callback(err, null);
+          } else {
+            let savedUser = new User({
+              firstName: body.firstName,
+              lastName: body.lastName,
+              password: hash,
+              email: body.email,
+              username: body.username,
+            });
+            // SAVE FUNCTION 
+            savedUser.save(function (err, payload) {
+              if (err) {
+                callback(err, null);
+              } else {
+                callback(null, payload);
+              }
+            });
+          }
+        });
+      }
+    });
+  },
 ```

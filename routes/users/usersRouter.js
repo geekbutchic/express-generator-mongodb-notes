@@ -1,41 +1,122 @@
+// const express = require("express");
+// const router = express.Router();
+
+// //BRING IN THE USER CONTROLLER
+// const userController = require("./controller/userController");
+// //console.log(userController);
+
+// /* GET USERS LISTING */
+// router.get("/", function (req, res, next) {
+//   res.json({
+//     test: true,
+//   });
+// });
+
+// router.get("/get-all-users", function (req, res) {
+//   userController.getAllUsers(function (err, payload) { //CALLBACK
+//     // console.log("err:", err);
+//     // console.log("payload: ", payload);
+//     if (err) { // IF ERR TRUE GIVE STATUS 500 MESSAGE
+//       res.status(500).json({ message: "ERROR", error: err });
+//     } else { // IF NOT SEND PAYLOAD
+//       res.json({ message: "SUCCESS", data: payload });
+//     }
+//   });//CALLBACK
+// });
+
+// router.post("/create-user", function (req, res) {
+//   // CREATE-USER METHOD 
+//   userController.createUser(req.body, function (err, payload) {
+//     // REQ.BODY COMES FROM POSTMAN
+//     if (err) {
+//       res.status(500).json({ message: "Error", error: err });
+//     } else {
+//       res.json({ message: "success", data: payload });
+//     }
+//   });
+// });
+
+// router.put("/update-user-by-id/:id", function (req, res) {
+//   userController.updateUserByID(
+//     req.params.id,
+//     req.body,
+//     function (err, updatedPayload) {
+//       if (err) {
+//         res.status(500).json({ message: "Error", error: err });
+//       } else {
+//         res.json({ message: "success", data: updatedPayload });
+//       }
+//     }
+//   );
+// });
+
+// router.delete("/delete-user-by-id/:id", function (req, res) {
+//   userController.deleteUserByID(req.params.id, function (err, deletedPayload) {
+//     console.log(req)
+//     if (err) {
+//       res.status(500).json({ message: "Error", error: err });
+//     } else {
+//       res.json({ message: "success", data: deletedPayload });
+//     }
+//   });
+// });
+
+// // LOCALHOST:3000/USERS
+// module.exports = router;
+
+// ====================== PROMISE VERSION ============================
+
 const express = require("express");
 const router = express.Router();
 
-//BRING IN THE USER CONTROLLER
-const userController = require("./controller/userController");
-//console.log(userController);
+// BRING IN THE USER CONTROLLER
+const { getAllUsers, createUser, updateUserByID, deleteUserByID } = require("./controller/userController");
+// 
 
-/* GET USERS LISTING */
+// GET USERS LISTING
 router.get("/", function (req, res, next) {
   res.json({
     test: true,
   });
 });
 
+// USER FUNCTION
 router.get("/get-all-users", function (req, res) {
-  userController.getAllUsers(function (err, payload) {
-    // console.log("err:", err);
-    // console.log("payload: ", payload);
-    if (err) { // IF ERR TRUE GIVE STATUS 500 MESSAGE
-      res.status(500).json({ message: "ERROR", error: err });
-    } else { // IF NOT SEND PAYLOAD
-      res.json({ message: "SUCCESS", data: payload });
-    }
-  });
-});
-
-router.post("/create-user", function (req, res) {
-  // CREATE-USER METHOD 
-  userController.createUser(req.body, function (err, payload) {
-    // REQ.BODY COMES FROM POSTMAN
-    if (err) {
-      res.status(500).json({ message: "Error", error: err });
-    } else {
+  getAllUsers()
+    .then((payload) => {
       res.json({ message: "success", data: payload });
-    }
-  });
+    })
+    .catch((error) => {
+      res.status(500).json({ message: "error", error });
+    });
 });
 
+// CREATE USER 
+router.post("/create-user", function (req, res) {
+  createUser(req.body)
+    .then((payload) => {
+      res.json({ message: "success", data: payload });
+    })
+    .catch((error) => {
+      res.status(500).json({ message: "error", error });
+    });
+});
 
-// LOCALHOST:3000/USERS
+// UPDATE USER BY ID
+router.put("/update-user-by-id/:id", function (req, res) {
+  updateUserByID(req.params.id, req.body)
+    .then((updatedUser) => res.json({ message: "success", updatedUser }))
+    .catch((error) =>
+      res.status(500).json({ message: "error", error: error.message })
+    );
+});
+
+router.delete("/delete-user-by-id/:id", function (req, res) {
+  deleteUserByID(req.params.id)
+    .then((deletedUser) => res.json({ message: "success", deletedUser }))
+    .catch((error) =>
+      res.status(500).json({ message: "error", error: error.message })
+    );
+});
+
 module.exports = router;

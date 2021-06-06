@@ -19,6 +19,6 @@ const userSchema = new mongoose.Schema({
     type: String,
   },
 });
-
+// IN ROBOT3 THE NAME WILL APPEAR AS USERS
 module.exports = mongoose.model("user", userSchema);
 //  MODEL WILL BE CALLED "USER" AND USE THIS SCHEMA
