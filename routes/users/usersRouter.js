@@ -143,40 +143,40 @@ router.get("/", function (req, res, next) {
   });
 });
 
-// 
+// ASYNC GET ALL USERS ROUTER
 router.get("/get-all-users", async function (req, res) {
   try {
     let foundAllUsers = await getAllUsers();
-    res.json({ message: "success", foundAllUsers });
+    res.json({ message: "SUCCESS", foundAllUsers });
   } catch (error) {
-    res.json({ message: "failure", error: error.message });
+    res.json({ message: "FAILURE", error: error.message });
   }
 });
-
+// ASYNC CREATE-USER
 router.post("/create-user", async function (req, res) {
   try {
     let createdUser = await createUser(req.body);
-    res.json({ message: "success", createdUser });
+    res.json({ message: "SUCCESS", createdUser });
   } catch (error) {
-    res.json({ message: "failure", error: error.message });
+    res.json({ message: "FAILURE", error: error.message });
   }
 });
-
+// ASYNC UPDATE-USER-BY-ID
 router.put("/update-user-by-id/:id", async function (req, res) {
   try {
     let updatedUser = await updateUserByID(req.params.id, req.body);
-    res.json({ message: "success", updatedUser });
+    res.json({ message: "SUCCESS", updatedUser });
   } catch (e) {
-    res.json({ message: "failure", error: error.message });
+    res.json({ message: "FAILURE", error: error.message });
   }
 });
 
 router.delete("/delete-user-by-id/:id", async function (req, res) {
   try {
     let deletedUser = await deleteUserByID(req.params.id);
-    res.json({ message: "success", deletedUser });
+    res.json({ message: "SUCCESS", deletedUser });
   } catch (e) {
-    res.json({ message: "failure", error: e.message });
+    res.json({ message: "FAILURE", error: e.message });
   }
 });
 

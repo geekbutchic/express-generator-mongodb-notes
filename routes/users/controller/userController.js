@@ -128,12 +128,14 @@
 //================== ASYNC AWAIT VERSION ======================
 
 const User = require("../model/User");
-// HASHED PASSWORD REQUIRE IN 
+// HASHED PASSWORD REQUIRE IN
 const bcrypt = require("bcryptjs");
 
-// ASYNC USES FUNCTIONS -> EXPORTS AT BOTTOM 
-async function getAllUsers() { // ASYNC KEYWORD
-  try { //
+// ASYNC USES FUNCTIONS -> EXPORTS AT BOTTOM
+async function getAllUsers() {
+  // ASYNC KEYWORD
+  try {
+    // AWAIT SIMILAR TO .THEN
     let foundAllUsers = await User.find({});
     return foundAllUsers;
   } catch (error) {
@@ -142,7 +144,7 @@ async function getAllUsers() { // ASYNC KEYWORD
 }
 async function createUser(body) {
   try {
-    let createdSalt = await bcrypt.genSalt(10);
+    let createdSalt = await bcrypt.genSalt(10); 
     let hashedPassword = await bcrypt.hash(body.password, createdSalt);
     let savedUser = new User({
       firstName: body.firstName,
@@ -156,6 +158,7 @@ async function createUser(body) {
     return error;
   }
 }
+
 async function updateUserByID(id, body) {
   try {
     let updatedUser = await User.findByIdAndUpdate({ _id: id }, body, {
@@ -166,6 +169,7 @@ async function updateUserByID(id, body) {
     return error;
   }
 }
+
 async function updateUserByID(id, body) {
   try {
     let updatedUser = await User.findByIdAndUpdate({ _id: id }, body, {
@@ -185,7 +189,7 @@ async function deleteUserByID(id) {
     return e;
   }
 }
-// INSTEAD OF WRAPPING -> EXPORTED HERE 
+// INSTEAD OF WRAPPING -> EXPORTED HERE
 module.exports = {
   getAllUsers,
   createUser,

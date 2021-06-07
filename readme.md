@@ -724,3 +724,153 @@ POSTMAN
 // SHOULD ALSO REFLECT IN ROBOT3
 ```
 ================== ASYNC AWAIT FUNCTIONS =======================
+TO NOTE WITH ASYNC AND AWAIT
+* MODULE.EXPORTS IS AT THE BOTTOM NOT WRAPPING THE FUNCTIONS
+* ASYNC IS A KEY WORD
+* TRY BLOCK 
+* CATCH BLOCK
+
+GET-ALL-USERS ASYNC FUNCTION
+```JAVASCRIPT
+// CONTROLLER
+async function getAllUsers() {
+  // ASYNC KEYWORD
+  try { // TRY BLOCK
+    // AWAIT SIMILAR TO .THEN
+    let foundAllUsers = await User.find({});
+    return foundAllUsers;
+  } catch (error) { //CATCH BLOCK 
+    return error;
+  }
+}
+// EXPORTS BELOW 
+module.exports = {
+  getAllUsers,
+};
+```
+GET-ALL-USERS ROUTER 
+```JAVASCRIPT
+const { getAllUsers } = require("./controller/userController");
+// REQUIRE IN DYNAMICALLY SAME AS IN PROMISE
+
+router.get("/get-all-users", async function (req, res) {
+  try { // PLACED INTO INTERMEDIATE VARIABLE
+    let foundAllUsers = await getAllUsers(); // CALLING FUNCTION
+    res.json({ message: "success", foundAllUsers });
+  } catch (error) {
+    res.json({ message: "failure", error: error.message });
+  }
+});
+```
+ASYNC CREATE USER FUNCTION
+```JAVASCRIPT
+async function createUser(body) {
+  try { // AWAIT HAS TO BE A PROMISE
+    let createdSalt = await bcrypt.genSalt(10);
+    let hashedPassword = await bcrypt.hash(body.password, createdSalt);
+    let savedUser = new User({
+      firstName: body.firstName,
+      lastName: body.lastName,
+      password: hashedPassword,
+      email: body.email,
+      username: body.username,
+    });
+    return await savedUser.save();
+  } catch (error) {
+    return error;
+  }
+}
+// EXPORTS BELOW 
+module.exports = {
+  getAllUsers,
+  createUser
+};
+```
+ASYNC CREATE-USER
+```JAVASCRIPT
+router.post("/create-user", async function (req, res) {
+  try {
+    let createdUser = await createUser(req.body);
+    res.json({ message: "SUCCESS", createdUser });
+  } catch (error) {
+    res.json({ message: "FAILURE", error: error.message });
+  }
+});
+```
+POSTMAN
+```JAVASCRIPT
+// localhost:3000/users/create-user
+{
+    "firstName": "Tom",
+    "lastName": "Distefano",
+    "password": "SecretService",
+    "email": "tom.distefano@gmail.com",
+    "username": "killshot"
+}
+// BODY OF CREATED-USER
+{
+    "message": "SUCCESS",
+    "createdUser": {
+        "_id": "60bd88fd880a0f3f4fae80fe",
+        "firstName": "Tom",
+        "lastName": "Distefano",
+        "password": "$2a$10$AryUxyl6tkr6whADxMn7Z.U0KWW2yBXbIvXkAsEx0fMJfM66sDFcC",
+        "email": "tom.distefano@gmail.com",
+        "username": "killshot",
+        "__v": 0
+    }
+}
+// FINAL RESULT WITH HASHED PASSWORD
+```
+
+ASYNC UPDATE-BY-USER-ID
+```javascript
+async function updateUserByID(id, body) {
+  try { // TRY BLOCK
+    let updatedUser = await User.findByIdAndUpdate({ _id: id }, body, {
+      new: true,
+    });
+    return updatedUser;
+  } catch (e) { // CATCH BLOCK
+    return error;
+  }
+}
+// EXPORTS 
+module.exports = {
+  getAllUsers,
+  createUser,
+  updateUserByID,
+};
+```
+ROUTER OF UPDATE-USER-BY-ID
+
+```JAVASCRIPT
+router.put("/update-user-by-id/:id", async function (req, res) {
+  try {
+    let updatedUser = await updateUserByID(req.params.id, req.body);
+    res.json({ message: "SUCCESS", updatedUser });
+  } catch (e) {
+    res.json({ message: "FAILURE", error: error.message });
+  }
+});
+```
+POSTMAN
+```JAVASCRIPT
+//localhost:3000/users/update-user-by-id/60bd88fd880a0f3f4fae80fe
+{
+    "firstName": "Thomas" // UPDATES NAME TOM => THOMAS
+}
+// BODY
+{
+    "message": "SUCCESS",
+    "updatedUser": {
+        "_id": "60bd88fd880a0f3f4fae80fe",
+        "firstName": "Thomas",
+        "lastName": "Distefano",
+        "password": "$2a$10$AryUxyl6tkr6whADxMn7Z.U0KWW2yBXbIvXkAsEx0fMJfM66sDFcC",
+        "email": "tom.distefano@gmail.com",
+        "username": "killshot",
+        "__v": 0
+    }
+}
+```
