@@ -65,62 +65,130 @@
 // ================== PROMISE VERSION ===========================
 
 // USER IS COMING FROM MONGODB SCHEMA
-const User = require("../model/User");
-const bcrypt = require("bcryptjs");
-// HASH PASSWORD LIBRARY
+// const User = require("../model/User");
+// const bcrypt = require("bcryptjs");
+// // HASH PASSWORD LIBRARY
 
-// PROMISE VERSION GET ALL USERS
+// // PROMISE VERSION GET ALL USERS
+// module.exports = {
+//   getAllUsers: function () {
+//     return new Promise((resolve, reject) => {
+//       User.find({})
+//         .then((payload) => {
+//           resolve(payload);
+//         })
+//         .catch((error) => {
+//           reject(error);
+//         });
+//     });
+//   }, // CREATE USER PROMISE VERSION
+//   createUser: function (body) {
+//     return new Promise((resolve, reject) => {
+//       //ASYNCHRONOUS
+//       bcrypt
+//         .genSalt(10) // GENERATES SALT
+//         .then((salt) => { // RETURNS SALT
+//           // NO LONGER NEED TO USE CALLBACK
+//           return bcrypt.hash(body.password, salt); //RETURNS HASHED PASSWORD
+//         })
+//         .then((hashedPassword) => {
+//           let savedUser = new User({
+//             firstName: body.firstName,
+//             lastName: body.lastName,
+//             password: hashedPassword,
+//             email: body.email,
+//             username: body.username,
+//           });
+//           return savedUser.save(); // RETURNS SAVED USER
+//         })
+//         .then((savedUser) => { // SENDS TO .THEN IN ROUTER
+//           resolve(savedUser); // PAYLOAD
+//         })
+//         .catch((error) => { // ERR
+//           reject(error);
+//         });
+//     });
+//   },// UPDATE USER BY ID
+//   updateUserByID: function (id, body) {
+//     return new Promise((resolve, reject) => {
+//       User.findByIdAndUpdate({ _id: id }, body, { new: true })
+//         .then((updatedUser) => resolve(updatedUser))
+//         .catch((error) => reject(error));
+//     });
+//   },// DELETE USER BY ID
+//   deleteUserByID: function (id) {
+//     return new Promise((resolve, reject) => {
+//       User.findByIdAndRemove({ _id: id })
+//         .then((deletedUser) => resolve(deletedUser))
+//         .catch((error) => reject(error));
+//     });
+//   },
+// };
+
+//================== ASYNC AWAIT VERSION ======================
+
+const User = require("../model/User");
+// HASHED PASSWORD REQUIRE IN 
+const bcrypt = require("bcryptjs");
+
+// ASYNC USES FUNCTIONS -> EXPORTS AT BOTTOM 
+async function getAllUsers() { // ASYNC KEYWORD
+  try { //
+    let foundAllUsers = await User.find({});
+    return foundAllUsers;
+  } catch (error) {
+    return error;
+  }
+}
+async function createUser(body) {
+  try {
+    let createdSalt = await bcrypt.genSalt(10);
+    let hashedPassword = await bcrypt.hash(body.password, createdSalt);
+    let savedUser = new User({
+      firstName: body.firstName,
+      lastName: body.lastName,
+      password: hashedPassword,
+      email: body.email,
+      username: body.username,
+    });
+    return await savedUser.save();
+  } catch (error) {
+    return error;
+  }
+}
+async function updateUserByID(id, body) {
+  try {
+    let updatedUser = await User.findByIdAndUpdate({ _id: id }, body, {
+      new: true,
+    });
+    return updatedUser;
+  } catch (error) {
+    return error;
+  }
+}
+async function updateUserByID(id, body) {
+  try {
+    let updatedUser = await User.findByIdAndUpdate({ _id: id }, body, {
+      new: true,
+    });
+    return updatedUser;
+  } catch (e) {
+    return error;
+  }
+}
+
+async function deleteUserByID(id) {
+  try {
+    let deletedUser = await User.findByIdAndDelete({ _id: id });
+    return deletedUser;
+  } catch (e) {
+    return e;
+  }
+}
+// INSTEAD OF WRAPPING -> EXPORTED HERE 
 module.exports = {
-  getAllUsers: function () {
-    return new Promise((resolve, reject) => {
-      User.find({})
-        .then((payload) => {
-          resolve(payload);
-        })
-        .catch((error) => {
-          reject(error);
-        });
-    });
-  }, // CREATE USER PROMISE VERSION
-  createUser: function (body) {
-    return new Promise((resolve, reject) => {
-      //ASYNCHRONOUS
-      bcrypt
-        .genSalt(10) // GENERATES SALT
-        .then((salt) => { // RETURNS SALT
-          // NO LONGER NEED TO USE CALLBACK
-          return bcrypt.hash(body.password, salt); //RETURNS HASHED PASSWORD
-        })
-        .then((hashedPassword) => {
-          let savedUser = new User({
-            firstName: body.firstName,
-            lastName: body.lastName,
-            password: hashedPassword,
-            email: body.email,
-            username: body.username,
-          });
-          return savedUser.save(); // RETURNS SAVED USER
-        })
-        .then((savedUser) => { // SENDS TO .THEN IN ROUTER 
-          resolve(savedUser); // PAYLOAD 
-        })
-        .catch((error) => { // ERR
-          reject(error);
-        });
-    });
-  },// UPDATE USER BY ID
-  updateUserByID: function (id, body) {
-    return new Promise((resolve, reject) => {
-      User.findByIdAndUpdate({ _id: id }, body, { new: true })
-        .then((updatedUser) => resolve(updatedUser))
-        .catch((error) => reject(error));
-    });
-  },// DELETE USER BY ID
-  deleteUserByID: function (id) {
-    return new Promise((resolve, reject) => {
-      User.findByIdAndRemove({ _id: id })
-        .then((deletedUser) => resolve(deletedUser))
-        .catch((error) => reject(error));
-    });
-  },
+  getAllUsers,
+  createUser,
+  updateUserByID,
+  deleteUserByID,
 };

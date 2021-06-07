@@ -601,7 +601,7 @@ nameOfFunction: function () {
 CREATE USER ROUTER-CONTROLLER FUNCTION
 ```JAVASCRIPT
 // UPDATE REQUIRE IN =>
-const { getAllUsers, createUser } = require("./controller/userController")
+const { getAllUsers, createUser } = require("./controller/userController");
 
 router.post("/create-user", function (req, res) {
   createUser(req.body)
@@ -652,6 +652,8 @@ POSTMAN WITH NEW CREATED USER
 ```
 UPDATE-USER-BY-ID ROUTER
 ```JAVASCRIPT
+const { getAllUsers, createUser, updateUserByID} = require("./controller/userController")
+
 router.put("/update-user-by-id/:id", function (req, res) {
   updateUserByID(req.params.id, req.body)
     .then((updatedUser) => res.json({ message: "SUCCESS", updatedUser }))
@@ -681,3 +683,44 @@ POSTMAN
 }
 // UPDATED USER => SHOULD ALSO REFLECT IN ROBOT3
 ```
+DELETE USER BY ID PROMISE
+```JAVASCRIPT
+// USER-CONTROLLER
+  deleteUserByID: function (id) {
+    return new Promise((resolve, reject) => {
+      User.findByIdAndRemove({ _id: id })
+        .then((deletedUser) => resolve(deletedUser))
+        .catch((error) => reject(error));
+    });
+  },
+```
+DELETE USER BY ID ROUTER
+```JAVASCRIPT
+//
+router.delete("/delete-user-by-id/:id", function (req, res) {
+  deleteUserByID(req.params.id)
+    .then((deletedUser) => res.json({ message: "SUCCESS", deletedUser }))
+    .catch((error) =>
+      res.status(500).json({ message: "error", error: error.message })
+    );
+});
+```
+POSTMAN
+```JAVASCRIPT
+// DELETE 
+// localhost:3000/users/delete-user-by-id/60bd5348e7924b333276819b
+{
+    "message": "SUCCESS",
+    "deletedUser": {
+        "_id": "60bd5348e7924b333276819b",
+        "firstName": "Santino",
+        "lastName": "Valenzuela",
+        "password": "$2a$10$ppEQCIZ1p7l.uAAzv4ekOuWCCSB.d1ngDElCcrWSPDnfFzSfDoziu",
+        "email": "sonnyleevalenz@icloud.com",
+        "username": "vsonnylee",
+        "__v": 0
+    }
+}
+// SHOULD ALSO REFLECT IN ROBOT3
+```
+================== ASYNC AWAIT FUNCTIONS =======================

@@ -28,7 +28,7 @@ const app = express();
 
 app.use(logger("dev"));
 app.use(express.json());
-// ACCEPTING DATA FROM FORM 
+// ACCEPTING DATA FROM DIFFERENT FORMS 
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 
