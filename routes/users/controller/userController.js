@@ -144,7 +144,7 @@ async function getAllUsers() {
 }
 async function createUser(body) {
   try {
-    let createdSalt = await bcrypt.genSalt(10); 
+    let createdSalt = await bcrypt.genSalt(10);
     let hashedPassword = await bcrypt.hash(body.password, createdSalt);
     let savedUser = new User({
       firstName: body.firstName,
@@ -170,25 +170,42 @@ async function updateUserByID(id, body) {
   }
 }
 
+// async function updateUserByID(id, body) {
+//   try {
+//     let updatedUser = await User.findByIdAndUpdate({ _id: id }, body, {
+//       new: true,
+//     });
+//     return updatedUser;
+//   } catch (e) {
+//     return error;
+//   }
+// }
+// CLEANER VERSION NOT INTERMEDIATE VARIABLE
 async function updateUserByID(id, body) {
   try {
-    let updatedUser = await User.findByIdAndUpdate({ _id: id }, body, {
-      new: true,
-    });
-    return updatedUser;
-  } catch (e) {
-    return error;
-  }
-}
-
-async function deleteUserByID(id) {
-  try {
-    let deletedUser = await User.findByIdAndDelete({ _id: id });
-    return deletedUser;
+    return await User.findByIdAndUpdate({ _id: id }, body, { new: true });
   } catch (e) {
     return e;
   }
 }
+
+// async function deleteUserByID(id) {
+//   try {
+//     let deletedUser = await User.findByIdAndDelete({ _id: id });
+//     return deletedUser;
+//   } catch (e) {
+//     return e;
+//   }
+// }
+// CLEANER RETURN VERSION WITHOUT INTERMEDIATE VARIABLES
+async function deleteUserByID(id) {
+  try {
+    return await User.findByIdAndDelete({ _id: id });
+  } catch (e) {
+    return e;
+  }
+}
+
 // INSTEAD OF WRAPPING -> EXPORTED HERE
 module.exports = {
   getAllUsers,

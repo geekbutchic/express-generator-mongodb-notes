@@ -835,6 +835,14 @@ async function updateUserByID(id, body) {
     return error;
   }
 }
+// NOT INTERMEDIATE VARIABLE VERSION
+async function deleteUserByID(id) {
+  try {
+    return await User.findByIdAndDelete({ _id: id });
+  } catch (e) {
+    return e;
+  }
+}
 // EXPORTS 
 module.exports = {
   getAllUsers,
@@ -873,4 +881,30 @@ POSTMAN
         "__v": 0
     }
 }
+```
+ASYNC DELETE USER BY ID 
+```JAVASCRIPT
+async function deleteUserByID(id) {
+  try {
+    let deletedUser = await User.findByIdAndDelete({ _id: id });
+    return deletedUser;
+  } catch (e) {
+    return e;
+  }
+}
+// CLEANER NO INTERMEDIATE VARIABLES 
+async function deleteUserByID(id) {
+  try {
+    return await User.findByIdAndDelete({ _id: id });
+  } catch (e) {
+    return e;
+  }
+}
+// EXPORTS 
+module.exports = {
+  getAllUsers,
+  createUser,
+  updateUserByID,
+  deleteUserByID,
+};
 ```
