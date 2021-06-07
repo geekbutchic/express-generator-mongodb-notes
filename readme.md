@@ -478,6 +478,7 @@ VIDEO: L- Express CRUD, Promise, Bcryptjs
 * CRUD - `CREATE, RETRIEVE, UPDATE, DELETE`
 * `POST = CREATE` * `GET = RETRIEVE` * `PUT = UPDATE` * `DELETE = DELETE`
 * `bcryptjs`
+* PROMISE `GETALLUSERS, CREATEUSER, UPDATEUSERBYID, DELETEUSERBYID`
 
 START WITH REQUIRING IN `bcryptjs` IN TERMINAL ADD `npm i bcryptjs`
 * NEXT REQUIRE IN `bcryptjs` LOCATED ON TOP OF PAGE 
@@ -515,4 +516,168 @@ BEFORE MOVING INTO PROMISES THE LAST FUNCTION WILL EXPLAIN CALLBACK HELL AND REQ
       }
     });
   },
+```
+### GET ALL USER WITH PROMISE FUNCTION
+```JAVASCRIPT
+  getAllUsers: function () {
+    return new Promise((resolve, reject) => {
+      User.find({}) // SUCCESS FINDING USER 
+        .then((payload) => { // CALLBACK REPLACED BY RESOLVE
+          resolve(payload); // PASS IN PAYLOAD : USER DATA
+        })
+        .catch((error) => {
+          reject(error);
+        });
+    });
+  }, 
+// USER-CONTROLLER
+```
+USER-ROUTER 
+```JAVASCRIPT
+// SUCCESS COMES BEFORE ERROR IN PROMISES 
+router.get("/get-all-users", function (req, res) {
+  getAllUsers() // CALL FUNCTION 
+    .then((payload) => { // RESOLVE => PAYLOAD
+      res.json({ message: "success", data: payload });
+    })
+    .catch((error) => {
+      res.status(500).json({ message: "error", error });
+    });
+});
+// USER-ROUTER VERSION
+```
+MAKE SURE TO REQUIRE IN `DESTRUCTED VERSION ON TOP OF PAGE`
+
+```JAVASCRIPT
+const { getAllUsers } = require("./controller/userController")
+```
+SHOULD RETURN SUCCESS IN POSTMAN
+
+```JAVASCRIPT
+{
+    "message": "success",
+    "data": []
+}
+```
+THE SKELETON OF A PROMISER FUNCTION
+```JAVASCRIPT
+nameOfFunction: function () {
+  return new Promise ((resolve, reject) => {
+
+  })
+}
+```
+### CREATE USER WITH A PROMISE FUNCTION
+```JAVASCRIPT
+  createUser: function (body) {
+    // WRAPPING PROMISE FOR ENTIRE FUNCTION
+    return new Promise((resolve, reject) => {
+      //ASYNCHRONOUS
+      bcrypt // REQUIRE IN SALT
+        .genSalt(10) // RETURN SALT = METHOD
+        .then((salt) => {
+          // NO LONGER NEED TO USE CALLBACK
+          return bcrypt.hash(body.password, salt); //RETURNS HASHED PASSWORD
+        })
+        .then((hashedPassword) => {
+          let savedUser = new User({
+            firstName: body.firstName,
+            lastName: body.lastName,
+            password: hashedPassword,
+            email: body.email,
+            username: body.username,
+          });
+          return savedUser.save();
+        })
+        .then((savedUser) => { // SENT TO ROUTER/PAYLOAD MESSAGE
+          resolve(savedUser);
+        })
+        .catch((error) => { // IF ERR SENT TO ROUTER/ERR MESSAGE
+          reject(error);
+        });
+    });
+  },
+```
+CREATE USER ROUTER-CONTROLLER FUNCTION
+```JAVASCRIPT
+// UPDATE REQUIRE IN =>
+const { getAllUsers, createUser } = require("./controller/userController")
+
+router.post("/create-user", function (req, res) {
+  createUser(req.body)
+    .then((payload) => {
+      res.json({ message: "SUCCESS", data: payload });
+    })
+    .catch((error) => {
+      res.status(500).json({ message: "error", error });
+    });
+});
+```
+POSTMAN WITH NEW CREATED USER 
+```JAVASCRIPT
+//localhost:3000/users/create-user
+// POST => BODY => RAW => JSON
+{
+    "firstName": "Sonny",
+    "lastName": "Valenzuela",
+    "password": "Raven736599",
+    "email": "sonnyleevalenz@icloud.com",
+    "username": "vsonnylee"
+}
+// CREATED USER ==========================
+{
+    "message": "SUCCESS",
+    "data": {
+        "_id": "60bd5348e7924b333276819b",
+        "firstName": "Sonny",
+        "lastName": "Valenzuela",
+        "password": "$2a$10$ppEQCIZ1p7l.uAAzv4ekOuWCCSB.d1ngDElCcrWSPDnfFzSfDoziu",
+        "email": "sonnyleevalenz@icloud.com",
+        "username": "vsonnylee",
+        "__v": 0
+    }
+}
+// RESULT WITH HASHED PASSWORD
+```
+### PROMISE UPDATE-USER-BY-ID
+```JAVASCRIPT
+// USER-CONTROLLER
+  updateUserByID: function (id, body) {
+    return new Promise((resolve, reject) => {
+      User.findByIdAndUpdate({ _id: id }, body, { new: true })
+        .then((updatedUser) => resolve(updatedUser))
+        .catch((error) => reject(error));
+    });
+  },
+```
+UPDATE-USER-BY-ID ROUTER
+```JAVASCRIPT
+router.put("/update-user-by-id/:id", function (req, res) {
+  updateUserByID(req.params.id, req.body)
+    .then((updatedUser) => res.json({ message: "SUCCESS", updatedUser }))
+    .catch((error) =>
+      res.status(500).json({ message: "error", error: error.message })
+    );
+});
+```
+POSTMAN 
+```JAVASCRIPT
+//localhost:3000/users/update-user-by-id/60bd5348e7924b333276819b
+{
+    "firstName": "Santino" // UPDATE NAME
+}
+//BODY
+{
+    "message": "SUCCESS",
+    "updatedUser": {
+        "_id": "60bd5348e7924b333276819b",
+        "firstName": "Santino",
+        "lastName": "Valenzuela",
+        "password": "$2a$10$ppEQCIZ1p7l.uAAzv4ekOuWCCSB.d1ngDElCcrWSPDnfFzSfDoziu",
+        "email": "sonnyleevalenz@icloud.com",
+        "username": "vsonnylee",
+        "__v": 0
+    }
+}
+// UPDATED USER => SHOULD ALSO REFLECT IN ROBOT3
 ```

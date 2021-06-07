@@ -62,8 +62,6 @@
 //   },
 // };
 
-
-
 // ================== PROMISE VERSION ===========================
 
 // USER IS COMING FROM MONGODB SCHEMA
@@ -71,7 +69,7 @@ const User = require("../model/User");
 const bcrypt = require("bcryptjs");
 // HASH PASSWORD LIBRARY
 
-// PROMISE VERSION
+// PROMISE VERSION GET ALL USERS
 module.exports = {
   getAllUsers: function () {
     return new Promise((resolve, reject) => {
@@ -83,15 +81,15 @@ module.exports = {
           reject(error);
         });
     });
-  }, //CREATE USER
+  }, // CREATE USER PROMISE VERSION
   createUser: function (body) {
-    //WRAPPING PROMISE FOR THIS ENTIRE FUNCTION
     return new Promise((resolve, reject) => {
+      //ASYNCHRONOUS
       bcrypt
-        .genSalt(10) //METHOD
-        .then((salt) => {
-          //RESULT
-          return bcrypt.hash(body.password, salt); //RETURNS SALT
+        .genSalt(10) // GENERATES SALT
+        .then((salt) => { // RETURNS SALT
+          // NO LONGER NEED TO USE CALLBACK
+          return bcrypt.hash(body.password, salt); //RETURNS HASHED PASSWORD
         })
         .then((hashedPassword) => {
           let savedUser = new User({
@@ -101,24 +99,24 @@ module.exports = {
             email: body.email,
             username: body.username,
           });
-          return savedUser.save();
+          return savedUser.save(); // RETURNS SAVED USER
         })
-        .then((savedUser) => {
-          resolve(savedUser);
+        .then((savedUser) => { // SENDS TO .THEN IN ROUTER 
+          resolve(savedUser); // PAYLOAD 
         })
-        .catch((error) => {
+        .catch((error) => { // ERR
           reject(error);
         });
     });
-  },
+  },// UPDATE USER BY ID
   updateUserByID: function (id, body) {
     return new Promise((resolve, reject) => {
       User.findByIdAndUpdate({ _id: id }, body, { new: true })
         .then((updatedUser) => resolve(updatedUser))
         .catch((error) => reject(error));
     });
-  },
-  deleteUserByID: function (id, callback) {
+  },// DELETE USER BY ID
+  deleteUserByID: function (id) {
     return new Promise((resolve, reject) => {
       User.findByIdAndRemove({ _id: id })
         .then((deletedUser) => resolve(deletedUser))
