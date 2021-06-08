@@ -127,48 +127,37 @@
 
 //================== ASYNC AWAIT VERSION ======================
 
-const User = require("../model/User");
-// HASHED PASSWORD REQUIRE IN
-const bcrypt = require("bcryptjs");
+// const User = require("../model/User");
+// // HASHED PASSWORD REQUIRE IN
+// const bcrypt = require("bcryptjs");
 
-// ASYNC USES FUNCTIONS -> EXPORTS AT BOTTOM
-async function getAllUsers() {
-  // ASYNC KEYWORD
-  try {
-    // AWAIT SIMILAR TO .THEN
-    let foundAllUsers = await User.find({});
-    return foundAllUsers;
-  } catch (error) {
-    return error;
-  }
-}
-async function createUser(body) {
-  try {
-    let createdSalt = await bcrypt.genSalt(10);
-    let hashedPassword = await bcrypt.hash(body.password, createdSalt);
-    let savedUser = new User({
-      firstName: body.firstName,
-      lastName: body.lastName,
-      password: hashedPassword,
-      email: body.email,
-      username: body.username,
-    });
-    return await savedUser.save();
-  } catch (error) {
-    return error;
-  }
-}
-
-async function updateUserByID(id, body) {
-  try {
-    let updatedUser = await User.findByIdAndUpdate({ _id: id }, body, {
-      new: true,
-    });
-    return updatedUser;
-  } catch (error) {
-    return error;
-  }
-}
+// // ASYNC USES FUNCTIONS -> EXPORTS AT BOTTOM
+// async function getAllUsers() {
+//   // ASYNC KEYWORD
+//   try {
+//     // AWAIT SIMILAR TO .THEN
+//     let foundAllUsers = await User.find({});
+//     return foundAllUsers;
+//   } catch (error) {
+//     return error;
+//   }
+// }
+// async function createUser(body) {
+//   try {
+//     let createdSalt = await bcrypt.genSalt(10);
+//     let hashedPassword = await bcrypt.hash(body.password, createdSalt);
+//     let savedUser = new User({
+//       firstName: body.firstName,
+//       lastName: body.lastName,
+//       password: hashedPassword,
+//       email: body.email,
+//       username: body.username,
+//     });
+//     return await savedUser.save();
+//   } catch (error) {
+//     return error;
+//   }
+// }
 
 // async function updateUserByID(id, body) {
 //   try {
@@ -176,40 +165,90 @@ async function updateUserByID(id, body) {
 //       new: true,
 //     });
 //     return updatedUser;
-//   } catch (e) {
+//   } catch (error) {
 //     return error;
 //   }
 // }
-// CLEANER VERSION NOT INTERMEDIATE VARIABLE
-async function updateUserByID(id, body) {
-  try {
-    return await User.findByIdAndUpdate({ _id: id }, body, { new: true });
-  } catch (e) {
-    return e;
-  }
-}
 
-// async function deleteUserByID(id) {
+// // async function updateUserByID(id, body) {
+// //   try {
+// //     let updatedUser = await User.findByIdAndUpdate({ _id: id }, body, {
+// //       new: true,
+// //     });
+// //     return updatedUser;
+// //   } catch (e) {
+// //     return error;
+// //   }
+// // }
+// // CLEANER VERSION NOT INTERMEDIATE VARIABLE
+// async function updateUserByID(id, body) {
 //   try {
-//     let deletedUser = await User.findByIdAndDelete({ _id: id });
-//     return deletedUser;
+//     return await User.findByIdAndUpdate({ _id: id }, body, { new: true });
 //   } catch (e) {
 //     return e;
 //   }
 // }
-// CLEANER RETURN VERSION WITHOUT INTERMEDIATE VARIABLES
-async function deleteUserByID(id) {
+
+// // async function deleteUserByID(id) {
+// //   try {
+// //     let deletedUser = await User.findByIdAndDelete({ _id: id });
+// //     return deletedUser;
+// //   } catch (e) {
+// //     return e;
+// //   }
+// // }
+// // CLEANER RETURN VERSION WITHOUT INTERMEDIATE VARIABLES
+// async function deleteUserByID(id) {
+//   try {
+//     return await User.findByIdAndDelete({ _id: id });
+//   } catch (e) {
+//     return e;
+//   }
+// }
+
+// // INSTEAD OF WRAPPING -> EXPORTED HERE
+// module.exports = {
+//   getAllUsers,
+//   createUser,
+//   updateUserByID,
+//   deleteUserByID,
+// };
+
+//============= FINAL VERSION OF ASYNC AND AWAIT ================
+
+const User = require("../model/User");
+
+const bcrypt = require("bcryptjs");
+
+async function getAllUsers(req, res) {
   try {
-    return await User.findByIdAndDelete({ _id: id });
+    let foundAllUsers = await User.find({});
+    res.json({ message: "SUCCESS", data: foundAllUsers });
   } catch (e) {
-    return e;
+    res.status(500).json({ message: "FAILURE", error: e.message });
   }
 }
 
-// INSTEAD OF WRAPPING -> EXPORTED HERE
+async function createUser(req, res) {
+  const { password, firstName, lastName, email, username } = req.body;
+  try {
+    let createdSalt = await bcrypt.genSalt(10);
+    let hashedPassword = await bcrypt.hash(password, createdSalt);
+    let newUser = new User({
+      firstName,
+      lastName,
+      email,
+      username,
+      password: hashedPassword,
+    });
+    let savedUser = await newUser.save();
+    res.json({ message: "SUCCESS", data: savedUser });
+  } catch (e) {
+    res.status(500).json({ message: "FAILURE", error: e.message });
+  }
+}
+
 module.exports = {
   getAllUsers,
   createUser,
-  updateUserByID,
-  deleteUserByID,
 };

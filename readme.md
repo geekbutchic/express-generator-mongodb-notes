@@ -908,3 +908,77 @@ module.exports = {
   deleteUserByID,
 };
 ```
+====================== FINAL ASYNC VERSION =====================
+IMPORTANT LESSON 
+```JAVASCRIPT
+// ANY FUNCTION AFTER PATH AUTOMATICALLY GET { REQ RES NEXT }
+router.get("/get-all-users", getAllUsers);
+```
+ASYNC GET-ALL-USERS
+```JAVASCRIPT
+// USER CONTROLLER
+async function getAllUsers(req, res) {
+  try { // TRY BLOCK
+    let foundAllUsers = await User.find({}); // NO ERR RESOLVE PAYLOAD
+    res.json({ message: "SUCCESS", data: foundAllUsers }); 
+  } catch (e) { // IF ERROR 
+    res.status(500).json({ message: "FAILURE", error: e.message });
+  }
+}
+```
+```JAVASCRIPT
+// USER ROUTER
+router.get("/get-all-users", getAllUsers);
+```
+CREATE USER
+
+```JAVASCRIPT
+async function createUser(req, res) {
+  const { password, firstName, lastName, email, username } = req.body;
+  try {
+    let createdSalt = await bcrypt.genSalt(10);
+    let hashedPassword = await bcrypt.hash(password, createdSalt);
+    let newUser = new User({
+      firstName,
+      lastName,
+      email,
+      username,
+      password: hashedPassword,
+    });
+    let savedUser = await newUser.save();
+    res.json({ message: "SUCCESS", data: savedUser });
+  } catch (e) {
+    res.status(500).json({ message: "FAILURE", error: e.message });
+  }
+}
+```
+USER ROUTER FOR CREATE USER
+```JAVASCRIPT
+router.post("/create-user", createUser);
+```
+POSTMAN
+```JAVASCRIPT
+//localhost:3000/users/create-user
+{
+    "firstName": "Sonny",
+    "lastName": "Valenzuela",
+    "email": "vsonnylee@gmail.com",
+    "password": "Morgenthau722",
+    "username": "vsonnylee"
+}
+// BODY
+```JAVASCRIPT
+{
+    "message": "SUCCESS",
+    "data": {
+        "_id": "60bee5f095c8696491c16759",
+        "firstName": "Sonny",
+        "lastName": "Valenzuela",
+        "email": "vsonnylee@gmail.com",
+        "username": "vsonnylee",
+        "password": "$2a$10$aRc8gNFccZLH6fcn9/hPYO8jgwKCuZUqwFNW.Y0pKw96zzrLFVYGW",
+        "__v": 0
+    }
+}
+// CREATED USER
+```
