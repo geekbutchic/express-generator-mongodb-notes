@@ -982,3 +982,77 @@ POSTMAN
 }
 // CREATED USER
 ```
+UPDATE-USER-BY-ID
+```JAVASCRIPT
+// USER CONTROLLER
+async function updateUserByID(req, res) {
+  const id = req.params.id;
+  try {
+    let updatedUser = await User.findByIdAndUpdate({ _id: id }, req.body, {
+      new: true,
+    });
+    res.json({ message: "success", data: updatedUser });
+  } catch (e) {
+    res.status(500).json({ message: "failure", error: e.message });
+  }
+}
+```
+USER ROUTER 
+```JAVASCRIPT
+router.put("/update-user-by-id/:id", updateUserByID);
+```
+POSTMAN
+```JAVASCRIPT
+// CHANGE NAME
+{
+    "firstName": "Santino"
+}
+// BODY
+{
+    "message": "success",
+    "data": {
+        "_id": "60bee5f095c8696491c16759",
+        "firstName": "Santino",
+        "lastName": "Valenzuela",
+        "email": "vsonnylee@gmail.com",
+        "username": "vsonnylee",
+        "password": "$2a$10$aRc8gNFccZLH6fcn9/hPYO8jgwKCuZUqwFNW.Y0pKw96zzrLFVYGW",
+        "__v": 0
+    }
+}
+// MESSAGE SUCCESS USER NAME UPDATED
+```
+DELETE-USER-BY-ID
+```JAVASCRIPT
+// USER CONTROLLER
+async function deleteUserByID(req, res) {
+  const id = req.params.id;
+  try {
+    let deletedUser = await User.findByIdAndRemove({ _id: id });
+    res.json({ message: "success", data: deletedUser });
+  } catch (e) {
+    res.status(500).json({ message: "failure", error: e.message });
+  }
+}
+```
+DELETE-USER-BY-ID
+```JAVASCRIPT
+router.delete("/delete-user-by-id/:id", deleteUserByID);
+```
+POSTMAN
+```JAVASCRIPT
+//localhost:3000/users/delete-user-by-id/60bee5f095c8696491c16759
+{
+    "message": "success",
+    "data": {
+        "_id": "60bee5f095c8696491c16759",
+        "firstName": "Santino",
+        "lastName": "Valenzuela",
+        "email": "vsonnylee@gmail.com",
+        "username": "vsonnylee",
+        "password": "$2a$10$aRc8gNFccZLH6fcn9/hPYO8jgwKCuZUqwFNW.Y0pKw96zzrLFVYGW",
+        "__v": 0
+    }
+}
+```
+SHOULD REFLECT IN ROBO3T 

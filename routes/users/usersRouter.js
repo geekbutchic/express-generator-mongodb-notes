@@ -185,6 +185,8 @@ const router = express.Router();
 const {
   getAllUsers,
   createUser,
+  updateUserByID,
+  deleteUserByID,
 } = require("./controller/userController");
 
 router.get("/", function (req, res, next) {
@@ -197,5 +199,8 @@ router.get("/get-all-users", getAllUsers);
 
 router.post("/create-user", createUser);
 
+router.put("/update-user-by-id/:id", updateUserByID);
+
+router.delete("/delete-user-by-id/:id", deleteUserByID);
 
 module.exports = router;
